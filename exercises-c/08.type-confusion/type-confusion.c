@@ -17,11 +17,18 @@ void inc_long_ptr(union long_ptr *lpp) {
 
 __cheri_compartment("type-confusion") int vuln1(void)
 {
+    int ret = 0;
+    CHERIOT_DURING{
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Type confusion (C)...");
 
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Before inc_long_ptr: lp.ptr = {}", (char*)lp.ptr);
     inc_long_ptr(&lp);
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "After inc_long_ptr: lp.ptr = {}", (char*)lp.ptr);
-
-    return 0;
+    }
+    CHERIOT_HANDLER{
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Type Confusion: memory error detected in vuln1");
+    ret = -1;
+    }
+    CHERIOT_END_HANDLER 
+    return  ret;
 }

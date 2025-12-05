@@ -4,6 +4,7 @@
 #include <compartment.h>
 #include <debug.h>
 #include <assert.h>
+#include <stdint.h>
 #include <unwind.h>
 
 #define DEBUG_CONTEXT "Stack Buffer Over Write Compartment"
@@ -17,6 +18,8 @@ void write_buf(char *buf, size_t ix)
 
 __cheri_compartment("stack-buffer-over-write") int vuln1(void)
 {
+    int ret = 0;
+    CHERIOT_DURING{
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Stack Buffer Over Write (C)...");
 
     char upper[0x10];
@@ -34,6 +37,11 @@ __cheri_compartment("stack-buffer-over-write") int vuln1(void)
     write_buf(lower, sizeof(lower));
 
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "upper[0] = {}", upper[0]);
-
-    return 0;
+    }
+    CHERIOT_HANDLER{
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Stack Buffer Over Write: memory error detected in vuln1");
+    ret = -1;
+    }
+    CHERIOT_END_HANDLER 
+    return ret;
 }

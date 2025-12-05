@@ -10,6 +10,8 @@
 
 __cheri_compartment("heap-buffer-over-write") int vuln1(void)
 {
+    int ret = 0;
+    CHERIOT_DURING{
     int* arr = (int*)malloc(3 * sizeof(int));
     if (arr == NULL) { return 0; }
 
@@ -24,7 +26,13 @@ __cheri_compartment("heap-buffer-over-write") int vuln1(void)
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "arr[4]: {} (this should not be printed).", arr[4]);
 
     free(arr);
+    }
+    CHERIOT_HANDLER{
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Heap Buffer Over Write: memory error detected in vuln1");
+    ret = -1;
+    }
+    CHERIOT_END_HANDLER 
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "This line may not be reached if the program crashes.");
 
-    return 0;
+    return ret;
 }

@@ -1,10 +1,10 @@
 // Diagnostics for double-free behavior
 // SPDX-License-Identifier: MIT
 
+#include <errno.h>
 #include <compartment.h>
 #include <debug.hh>
 #include <unwind.h>
-#include <fail-simulator-on-error.h>
 
 using Debug = ConditionalDebug<true, "Double Compartment">;
 
@@ -17,10 +17,22 @@ __cheri_compartment("double-free") int vuln1(void)
     if (!ptr) { Debug::log( "malloc returned NULL"); return 0; }
     *ptr = 42;
 
-    free(ptr);
+    int err = heap_free(MALLOC_CAPABILITY,ptr);
+    if (err == -EINVAL) {
+        Debug::log( "Caught double free error: {}", err);
+    } 
+    else if (err == -ENOTENOUGHSTACK) {
+        Debug::log( "Caught stack overflow error: {}", err);
+    }
     Debug::log("After first free");
 
-    free(ptr);
+    err = heap_free(MALLOC_CAPABILITY,ptr);
+    if (err == -EINVAL) {
+        Debug::log( "Caught double free error: {}", err);
+    } 
+    else if (err == -ENOTENOUGHSTACK) {
+        Debug::log( "Caught stack overflow error: {}", err);
+    }
     Debug::log("After second free");
 
     return 0;

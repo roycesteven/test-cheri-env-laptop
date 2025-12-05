@@ -12,8 +12,12 @@
 /// Thread entry point.
 __cheri_compartment("heap-buffer-over-read") int vuln1()
 {
+    int ret = 0;
+    CHERIOT_DURING{
     int* arr = (int*)malloc(3 * sizeof(int));
-    if (arr == NULL) {return 0;} // Always check for malloc failure
+    if (arr == NULL) {
+         CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "malloc failed");
+        return 0;} // Always check for malloc failure
     arr[0] = 10;
     arr[1] = 20;
     arr[2] = 30;
@@ -25,7 +29,14 @@ __cheri_compartment("heap-buffer-over-read") int vuln1()
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Value: {} (This should not be printed)", value);
 
     free(arr);
+
+    }
+    CHERIOT_HANDLER{
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Heap Buffer Over Read: memory error detected in vuln1");
+    ret = -1;
+    }
+    CHERIOT_END_HANDLER
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "This line may not be reached if the program crashes.");
 
-    return 0;
+    return ret;
 }

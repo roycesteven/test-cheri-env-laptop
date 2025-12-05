@@ -19,11 +19,28 @@ __cheri_compartment("double-free") int vuln1(void)
 
     int *ptr2 = ptr;
 
-    free(ptr);
+    int ret = 0;
+
+    int err = heap_free(MALLOC_CAPABILITY,ptr);
+    if (err == -EINVAL) {
+        CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Caught double free error: {}", err);
+    } 
+    else if (err == -ENOTENOUGHSTACK) {
+        CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Caught stack overflow error: {}", err);
+    }
+    
+
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "After first free");
 
-    free(ptr2);
+    err = heap_free(MALLOC_CAPABILITY, ptr2);
+    if (err == -EINVAL) {
+        CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Caught double free error: {}", err);
+    } 
+    else if (err == -ENOTENOUGHSTACK) {
+        CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Caught stack overflow error: {}", err);
+    }
+
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "After second free");
 
-    return 0;
+    return ret;
 }
