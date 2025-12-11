@@ -10,7 +10,7 @@
 
 __cheri_compartment("heap-buffer-over-write") int vuln1(void)
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     int* arr = (int*)malloc(3 * sizeof(int));
     if (arr == NULL) { return 0; }

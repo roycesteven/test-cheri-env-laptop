@@ -10,7 +10,7 @@
 
 __cheri_compartment("heap-buffer-under-write") int vuln1(void)
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{ 
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Heap Buffer Under-write (C)...");
 
@@ -32,5 +32,5 @@ __cheri_compartment("heap-buffer-under-write") int vuln1(void)
     CHERIOT_END_HANDLER 
 
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "This line may not be reached if the program crashes.");
-    return 0;
+    return ret;
 }

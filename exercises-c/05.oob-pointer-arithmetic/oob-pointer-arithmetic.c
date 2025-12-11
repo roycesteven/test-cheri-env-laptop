@@ -9,7 +9,7 @@
 
 __cheri_compartment("oob-pointer-arithmetic") int vuln1(void)
 {  
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Out-Of-Bounds Pointer Arithmetic (C)...");
     int arr[4] = {100, 200, 300, 400};

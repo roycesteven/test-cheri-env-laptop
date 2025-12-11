@@ -12,7 +12,7 @@
 /// Thread entry point.
 __cheri_compartment("heap-buffer-over-read") int vuln1()
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     int* arr = (int*)malloc(3 * sizeof(int));
     if (arr == NULL) {

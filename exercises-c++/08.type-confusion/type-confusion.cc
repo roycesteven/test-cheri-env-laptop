@@ -19,6 +19,8 @@ void inc_long_ptr(long_ptr* lpp) {
 
 int __cheri_compartment("type-confusion") vuln1()
 {
+
+    volatile int ret = 0;
     CHERIOT_DURING{
         Debug::log("Testing Type confusion (C++)...");
         Debug::log("Before inc_long_ptr: lp.ptr = {}", lp.ptr);
@@ -27,9 +29,9 @@ int __cheri_compartment("type-confusion") vuln1()
     }
     CHERIOT_HANDLER{
         Debug::log("Type Confusion: memory error detected in vuln1");
-        return -1;
+        ret = -1;
     }
     CHERIOT_END_HANDLER
-
-    return 0;
+    Debug::log("This line may not be reached if the program crashes.");
+    return ret;
 }

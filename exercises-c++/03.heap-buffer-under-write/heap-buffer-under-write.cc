@@ -8,7 +8,7 @@ using Debug = ConditionalDebug<true, "Heap Buffer Under Write Compartment">;
 
 int __cheri_compartment("heap-buffer-under-write") vuln1()
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     Debug::log("Testing Heap Buffer Under-write (C++)...");
     int* arr = new int[3];

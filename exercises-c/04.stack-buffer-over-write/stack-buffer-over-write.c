@@ -18,7 +18,7 @@ void write_buf(char *buf, size_t ix)
 
 __cheri_compartment("stack-buffer-over-write") int vuln1(void)
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Stack Buffer Over Write (C)...");
 
@@ -43,5 +43,6 @@ __cheri_compartment("stack-buffer-over-write") int vuln1(void)
     ret = -1;
     }
     CHERIOT_END_HANDLER 
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT,"This line may not be reached if the program crashes.");
     return ret;
 }

@@ -12,7 +12,7 @@
 /// Thread entry point.
 __cheri_compartment("use-after-free") int vuln1()
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
     CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "Testing Use-After-Free (C)...");
     int* ptr = (int*)malloc(sizeof(int));
@@ -32,6 +32,6 @@ __cheri_compartment("use-after-free") int vuln1()
     ret = -1;
     }
     CHERIOT_END_HANDLER 
-
+    CHERIOT_DEBUG_LOG(DEBUG_CONTEXT, "This line may not be reached if the program crashes.");
     return ret;
 }

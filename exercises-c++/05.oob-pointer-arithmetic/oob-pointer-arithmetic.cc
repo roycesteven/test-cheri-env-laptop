@@ -8,7 +8,7 @@ using Debug = ConditionalDebug<true, "OOB Pointer Arithmetic Compartment">;
 
 int __cheri_compartment("oob-pointer-arithmetic") vuln1()
 {
-    int ret =0; 
+    volatile int ret =0; 
     CHERIOT_DURING{
             Debug::log("Testing Out-Of-Bounds Pointer Arithmetic (C++)...");
             int arr[4] = {100, 200, 300, 400};

@@ -8,6 +8,7 @@ using Debug = ConditionalDebug<true, "Use After Free Compartment">;
 
 int __cheri_compartment("use-after-free") vuln1()
 {
+    volatile int ret =0;
     CHERIOT_DURING{
         Debug::log("Testing Use-After-Free (C++)...");
         int* ptr = new int;
@@ -26,9 +27,9 @@ int __cheri_compartment("use-after-free") vuln1()
     }
     CHERIOT_HANDLER{
         Debug::log("Use After Free: memory error detected in vuln1");
-        return -1;
+        ret = -1;
     } 
     CHERIOT_END_HANDLER
-
-    return 0;
+    Debug::log("This line may not be reached if the program crashes.");
+    return ret;
 }

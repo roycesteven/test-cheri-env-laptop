@@ -19,7 +19,7 @@ __cheri_compartment("double-free") int vuln1(void)
 
     int ret = 0;
 
-    int err = heap_free(MALLOC_CAPABILITY,ptr);
+    int err = free(ptr);
     if (err == -EINVAL) {
         Debug::log( "Caught double free error: {}", err);
         ret = -1;
@@ -40,6 +40,6 @@ __cheri_compartment("double-free") int vuln1(void)
         ret = -1;
     }
     Debug::log("After second free");
-
+    Debug::log("This line may not be reached if the program crashes.");
     return ret;
 }

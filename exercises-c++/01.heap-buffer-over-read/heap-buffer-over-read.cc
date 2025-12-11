@@ -15,7 +15,7 @@ using Debug = ConditionalDebug<true, "Heap Buffer Over Read Compartment">;
 /// Thread entry point.
 int __cheri_compartment("heap-buffer-over-read") vuln1()
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
         Debug::log("Running Buffer Over-read (C++)...");
         int* arr = new int[3];

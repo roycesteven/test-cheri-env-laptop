@@ -14,7 +14,7 @@ void write_buf(char* buf, size_t ix)
 
 int __cheri_compartment("stack-buffer-over-write") vuln1()
 {
-    int ret = 0;
+    volatile int ret = 0;
     CHERIOT_DURING{
         Debug::log("Testing Stack Buffer Over Write (C++)...");
         char upper[0x10];
